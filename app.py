@@ -120,3 +120,19 @@ def clear_logs():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+# --- Mantener activa la app en Render ---
+import threading, requests, time, os
+
+def keep_awake():
+    url = os.getenv("RENDER_EXTERNAL_URL") or "https://tu-app.onrender.com"
+    while True:
+        try:
+            requests.get(url)
+            print(f"[KEEP-ALIVE] Pinged {url}")
+        except Exception as e:
+            print(f"[KEEP-ALIVE] Error: {e}")
+        time.sleep(600)  # cada 10 minutos
+
+threading.Thread(target=keep_awake, daemon=True).start()
